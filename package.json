@@ -1,0 +1,22 @@
+{
+  "name": "backup",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "archiver": "^3.1.1",
+    "basic-ftp": "^4.0.2",
+    "cheerio": "^1.0.0-rc.3",
+    "dotenv": "^8.1.0",
+    "nodemailer": "^6.3.0"
+  },
+  "pkg":{
+    "assets": "./mail/index.html"
+  }
+}
