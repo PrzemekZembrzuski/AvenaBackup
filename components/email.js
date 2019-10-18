@@ -23,7 +23,7 @@ class Email {
 
   send(errors) {
     // Modifing email html
-    let html = fs.readFileSync(path.join(__dirname,'../mail/index.html'),'utf-8');
+    let html = fs.readFileSync('./mail/index.html','utf-8');
     const errors_filtered = Object.values(errors).filter(value=>{
       return value.length
     })
@@ -46,7 +46,7 @@ class Email {
     html = $.root().html()
 
     // Send email
-    return new Promise(resolve => {
+    return new Promise((resolve,reject) => {
       this.transporter.sendMail({
         from: process.env.EMAIL_FROM, // sender address
         to: process.env.EMAIL_LIST.trim().split(','), // list of receivers
@@ -54,11 +54,11 @@ class Email {
         html: html// plain text body
       }, error => {
         if (error) {
-          log.add(error, true)
+          reject(error)
+        }else{
+          resolve()
         }
-        log.add('email sended\r\n')
         this.transporter.close()
-        resolve()
       })
     })
   }
