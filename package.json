@@ -19,5 +19,8 @@
   },
   "pkg": {
     "assets": "./mail/index.html"
+  },
+  "devDependencies": {
+    "nexe": "^3.3.2"
   }
 }

@@ -7,7 +7,7 @@ const email = require('./components/email');
 const archiver = require('./components/archiver');
 const ftp = require('./components/ftp');
 const Backup = require('./components/backup');
-
+const Spinner = require('./components/spinner');
 
 
 
@@ -15,6 +15,8 @@ const Backup = require('./components/backup');
 
 
     const errorsArray = [];
+
+    const spinner = new Spinner('GBAK')
 
     // Make backup
     const DBPaths = process.env.DB_PATHS.split(',');
@@ -29,12 +31,13 @@ const Backup = require('./components/backup');
         log.setHeader(type)
             .add(output)
             .error(error);
+
     }
 
 
 
 
-
+    spinner.succeed().change('Archive')
     // Add to archive
     try {
         log.setHeader('Archiver');
@@ -42,6 +45,7 @@ const Backup = require('./components/backup');
         log.add(`Added to archive ${files.join(',')}`)
             .add(`Archive path: ${destinantion}`);
 
+        spinner.succeed().change('FTP')
         // Send to ftp
         try {
             log.setHeader('FTP');
@@ -50,30 +54,32 @@ const Backup = require('./components/backup');
 
         } catch (error) {
             errorsArray.push({
-                type:'FTP',
+                type: 'FTP',
                 error
             });
             log.error(error);
+            spinner.fail()
         }
     } catch (error) {
         errorsArray.push({
-            type:'Archive',
+            type: 'Archive',
             error
         });
         log.error(error);
+        spinner.fail()
     }
 
 
 
+    spinner.change('Email')
     // Send mail
     try {
         log.setHeader('Email');
         await email.send(errorsArray);
+        spinner.succeed()
     } catch (error) {
-        log.error(error);
+        spinner.fail()
     }
-
-
     log.close();
 })()
 

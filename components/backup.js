@@ -20,13 +20,18 @@ class Backup {
   run() {
     const gbak = spawnSync('gbak.exe', ['-t', '-v', '-user', process.env.DB_USERNAME, '-password', process.env.DB_PASSWORD, '-y', this.log_path, this.db_path, this.backup_path])
 
+    if(gbak.error){
+      this.return.error = gbak.error;
+      return this.return
+    }
     if (gbak.stderr.length) {
-      this.return.errors = gbak.stderr.toString()
+      this.return.error = gbak.stderr.toString()
     }
     this.return.output = gbak.stdout.toString()
 
     return this.return
   }
 }
+
 
 module.exports = Backup

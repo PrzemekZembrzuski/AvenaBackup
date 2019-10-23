@@ -19,20 +19,21 @@ class Log{
     }
     add(text){
         this.file.write(text.toString()+'\r\n')
-        return this.file
+        return this
     }
     error(text){
         this.file.write('----------------------ERRORS----------------------\r\n');
         this.file.write(text.toString()+'\r\n')
         this.file.write('---------------------ENDERRORS---------------------\r\n')
-        return this.file
+        return this
     }
     setHeader(text){
         this.file.write(`~~~~~~~~~~~~~~~~~~~~~~~~${text.toUpperCase()}~~~~~~~~~~~~~~~~~~~~~~~~\r\n`)
-        return this.file
+        return this
     }
     close(){
         this.file.end('--------------------END--------------------')
+        console.log('adsaasfsdfd')
     }
 }
 

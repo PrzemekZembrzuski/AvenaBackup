@@ -18,7 +18,7 @@ class FTP{
         return this.client.access(this.options)     
     }
     send(file_path){
-        return new Promise((resolve,reject)=>{
+        return new Promise(async (resolve,reject)=>{
             try {
                 await this._connect()
                 await this.client.cd(`/AvenaBackup/${process.env.NAME}/${this.dayWeek[new Date().getDay()]}`)

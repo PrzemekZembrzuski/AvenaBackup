@@ -24,18 +24,15 @@ class Email {
   send(errors) {
     // Modifing email html
     let html = fs.readFileSync('./mail/index.html','utf-8');
-    const errors_filtered = Object.values(errors).filter(value=>{
-      return value.length
-    })
     const $ = cheerio.load(html)
-    if(errors_filtered.length){
+    if(errors.length){ 
       $('#success').remove()
       const table_body = $('table > tbody')
-      Object.keys(errors).map(key=>{
+      errors.map(({type,error})=>{
         table_body.append(`
           <tr>
-            <td>${key}</td>
-            <td>${errors[key]}</td>
+            <td>${type}</td>
+            <td>${error}</td>
           </tr>
         `)
       })
