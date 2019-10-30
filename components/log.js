@@ -2,20 +2,19 @@ const fs = require('fs');
 const path = require('path');
 
 
+const dirCreate = require('../utils/dirCreate')
+
 class Log{
     constructor(){
         this.date = new Date().toJSON().slice(0,10).split('-').reverse().join('-');
         this.dir_path = path.normalize(path.join(path.dirname(process.execPath),'logs'))
+        // this.dir_path = path.normalize(path.join(__dirname,'logs'))
         this.path = path.normalize(path.join(this.dir_path,`${this.date}-${Date.now()}.log`))
         this._create()
         this.file = fs.createWriteStream(this.path,{flags:'a'})
     }
     _create(){
-        try {
-            fs.accessSync(this.dir_path)
-        } catch (error) {
-            fs.mkdirSync(this.dir_path)
-        }
+        dirCreate([this.dir_path])
     }
     add(text){
         this.file.write(text.toString()+'\r\n')
@@ -33,7 +32,6 @@ class Log{
     }
     close(){
         this.file.end('--------------------END--------------------')
-        console.log('adsaasfsdfd')
     }
 }
 

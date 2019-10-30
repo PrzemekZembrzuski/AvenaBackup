@@ -2,15 +2,19 @@ const archiver = require('archiver');
 const fs = require('fs');
 const path = require('path');
 
-
+const dirCreate = require('../utils/dirCreate')
 
 class Archiver {
     constructor() {
+        this._checkDir()
         this.archive = archiver('zip', {
             zlib: { level: 9 } // Sets the compression level.
         });
         this.date = new Date().toJSON().slice(0, 10).split('-').reverse().join('-')
-        this.archive_file = undefined
+    }
+    
+    _checkDir(){
+        dirCreate([process.env.ARCHIVE_PATH])
     }
 
     _exist(backup_dir) {
@@ -18,13 +22,11 @@ class Archiver {
             return path.join(backup_dir, dir_content)
         })
         if (!dir_content_array.length) {
-            this.return.error = 'NO BACKUP FILES'
-            return false
+            throw new Error('NO BACKUP FILES')
         }
         return dir_content_array
     }
     make(backup_dir, destinatio_path) {
-        const typeObj = {type:'Archive'}
         const dir_content_array =this._exist(backup_dir) 
         if (dir_content_array) {
             return new Promise((resolve,reject) => {

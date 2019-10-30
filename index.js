@@ -16,19 +16,25 @@ const Spinner = require('./components/spinner');
 
     const errorsArray = [];
 
-    const spinner = new Spinner('GBAK')
+    const spinner = new Spinner()
 
     // Make backup
     const DBPaths = process.env.DB_PATHS.split(',');
     const iterations = DBPaths.length;
     for (let index = 0; index < iterations; index++) {
         const backup = new Backup(DBPaths[index]);
-        const { error, type, output } = backup.run();
+        spinner.start(backup.type)
+        const { error, output } = backup.run();
+        if(error){
+            spinner.fail()
+        }else{
+            spinner.succeed()
+        }
         errorsArray.push({
-            type,
+            type: backup.type,
             error
         });
-        log.setHeader(type)
+        log.setHeader(backup.type)
             .add(output)
             .error(error);
 
@@ -37,20 +43,21 @@ const Spinner = require('./components/spinner');
 
 
 
-    spinner.succeed().change('Archive')
+    spinner.start('Archive')
     // Add to archive
     try {
         log.setHeader('Archiver');
-        const { files, destinantion } = await archiver.make(process.env.DB_BACKUP_PATH, process.env.ARCHIVE_PATH);
+        const { files, destination } = await archiver.make(process.env.DB_BACKUP_PATH, process.env.ARCHIVE_PATH);
         log.add(`Added to archive ${files.join(',')}`)
-            .add(`Archive path: ${destinantion}`);
+            .add(`Archive path: ${destination}`);
 
-        spinner.succeed().change('FTP')
+        spinner.succeed().start('FTP')
         // Send to ftp
         try {
             log.setHeader('FTP');
-            const result = await ftp.send(destinantion);
+            const result = await ftp.send(destination);
             log.add(result);
+            spinner.succeed()
 
         } catch (error) {
             errorsArray.push({
@@ -71,7 +78,7 @@ const Spinner = require('./components/spinner');
 
 
 
-    spinner.change('Email')
+    spinner.start('Email')
     // Send mail
     try {
         log.setHeader('Email');

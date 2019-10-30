@@ -2,13 +2,11 @@ const ora = require('ora');
 
 
 class Spinner{
-    constructor(text){
-        this.spinner = ora(text).start()
+    constructor(){
+        this.spinner = ora()
     }
-
-    change(text){
-        this.spinner.text = text
-        this.spinner.start()
+    start(text){
+        this.spinner.start(text)
     }
     succeed(){
         this.spinner.succeed()
@@ -21,6 +19,8 @@ class Spinner{
         this.spinner.stop()
     }
 }
+  
+
 
 
 module.exports =  Spinner
