@@ -26,14 +26,14 @@ const Spinner = require('./components/spinner');
         spinner.start(backup.type)
         const { error, output } = backup.run();
         if(error){
+            errorsArray.push({
+                type: backup.type,
+                error
+            });
             spinner.fail()
         }else{
             spinner.succeed()
         }
-        errorsArray.push({
-            type: backup.type,
-            error
-        });
         log.setHeader(backup.type)
             .add(output)
             .error(error);
